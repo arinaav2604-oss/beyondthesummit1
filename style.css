@@ -79,29 +79,15 @@ body {
 }
 
 /* ==========================================================================
-   FAIL-SAFE REVEAL ENGINE
-   (Never hides content permanently if observer is bypassed or anchor jumps)
+   PERMANENT CONTENT VISIBILITY ENGINE
+   (Content is 100% visible immediately. Never locks out or disappears.)
    ========================================================================== */
 .reveal {
-  opacity: 1;
-  transform: translateY(1);
-  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+  transition: opacity 0.5s ease;
 }
-
-/* Only initiate scroll fade if JavaScript is fully running */
-.js-loaded .reveal:not(.active) {
-  opacity: 0;
-  transform: translateY(22px);
-}
-
-.js-loaded .reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.delay-1 { transition-delay: 0.1s; }
-.delay-2 { transition-delay: 0.2s; }
 
 /* Responsive Utility Visibility */
 @media (max-width: 900px) {
@@ -1081,7 +1067,7 @@ body {
   border-radius: 4px;
   color: #FFF;
   font-family: var(--font-body);
-  font-size: 16px; /* Prevents auto-zoom on iOS */
+  font-size: 16px;
   margin-bottom: 12px;
 }
 .lead-form input:focus, .lead-form select:focus, .lead-form textarea:focus {
