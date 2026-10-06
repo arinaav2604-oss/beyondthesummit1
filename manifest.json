@@ -9,12 +9,12 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "BK-face1.jpg",
+      "src": "bts1.jpeg",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "BK-face1.jpg",
+      "src": "bts1.jpeg",
       "sizes": "512x512",
       "type": "image/jpeg"
     }
