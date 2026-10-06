@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bts-campaign-v4';
+const CACHE_NAME = 'bts-campaign-v5';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -30,7 +30,7 @@ self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
-  // Network first with cache fallback
+  // Network first: always attempts to serve the newest file; falls back to cache offline
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
