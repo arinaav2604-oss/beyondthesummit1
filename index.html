@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#E9692A" />
+  <meta name="description" content="Beyond the Summit: Seven Continents. One Tricolour. One Extraordinary Story. Official sponsorship property and campaign built around Baljeet Kaur." />
+  <title>Beyond The Summit | Seven Continents. One Tricolour.</title>
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Fonts & Icons Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Navbar image logo rule */
+    .brand-logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      padding: 4px 0;
+    }
+    .brand-campaign-img {
+      height: 48px;
+      max-height: 52px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+    .brand-logo-link:hover .brand-campaign-img {
+      transform: scale(1.03);
+    }
+    .hero-badge-logo {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: block;
+      filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.7));
+    }
+    .footer-logo-img {
+      height: 64px;
+      width: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      display: inline-block;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
+    }
+    @media (max-width: 600px) {
+      .brand-campaign-img {
+        height: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Static Film Grain Overlay -->
+  <div class="film-grain" aria-hidden="true"></div>
+
+  <!-- Desktop Magnetic Cursor -->
+  <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+
+  <!-- Telemetry Preloader Sequence -->
+  <div id="preloader" role="dialog" aria-modal="true" aria-label="Expedition boot sequence">
+    <canvas id="loader-canvas"></canvas>
+    <div class="loader-terminal glass-panel">
+      <div class="terminal-header">
+        <span class="pulse-beacon"></span>
+        <span class="mono-label">BEYOND THE SUMMIT // CAMPAIGN TELEMETRY</span>
+      </div>
+
+      <div class="topography-stage">
+        <svg viewBox="0 0 400 180" class="topography-svg" id="topo-svg" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="topoOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#E9692A"/>
+              <stop offset="100%" stop-color="#FF334B"/>
+            </linearGradient>
+          </defs>
+          <path id="route-base" d="M 20 170 L 110 110 L 180 135 L 260 30 L 330 90 L 380 170" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3" stroke-linecap="round"/>
+          <path id="route-active" d="M 20 170 L 110 110 L 180 135 L 260 30 L 330 90 L 380 170" fill="none" stroke="url(#topoOrange)" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+
+        <div class="climber-sprite" id="climber-sprite">
+          <div class="axe-spark"></div>
+          <i class="fa-solid fa-person-hiking"></i>
+        </div>
+
+        <div class="summit-beacon" id="summit-beacon">
+          <i class="fa-solid fa-flag"></i>
+          <span>SEVEN CONTINENTS</span>
+        </div>
+      </div>
+
+      <div class="telemetry-readouts">
+        <div class="readout-block">
+          <div class="readout-title">CAMPAIGN ELEVATION</div>
+          <div class="readout-value"><span id="preloader-alt">1,500</span><span class="unit">M</span></div>
+          <div class="readout-title" id="zone-status" style="color: var(--orange); margin-top: 4px;">INITIALIZING EXPEDITION</div>
+        </div>
+        <div class="readout-block bio-block">
+          <div class="bio-row"><span>Cycle:</span><span id="bio-spo2" class="text-orange">2026–2028</span></div>
+          <div class="bio-row"><span>Scale:</span><span id="bio-baro">7 Continents</span></div>
+          <canvas id="ecg-canvas" width="130" height="24"></canvas>
+        </div>
+      </div>
+      <div class="loader-progress-track">
+        <div class="loader-progress-bar" id="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop Vertical HUD Altimeter -->
+  <aside class="desktop-alt-hud" id="desktopHud" aria-hidden="true">
+    <div class="hud-track">
+      <div class="hud-fill" id="hudFill"></div>
+      <div class="hud-indicator" id="hudIndicator">
+        <div class="hud-badge"><span id="hudAltNum">1,500</span>M</div>
+      </div>
+      <div class="hud-waypoint" style="bottom: 100%;"><span class="wp-dot"></span><span class="wp-text">8,849M // EVEREST (ASIA)</span></div>
+      <div class="hud-waypoint" style="bottom: 78%;"><span class="wp-dot"></span><span class="wp-text">6,961M // ACONCAGUA</span></div>
+      <div class="hud-waypoint" style="bottom: 65%;"><span class="wp-dot"></span><span class="wp-text">6,190M // DENALI</span></div>
+      <div class="hud-waypoint" style="bottom: 48%;"><span class="wp-dot"></span><span class="wp-text">4,892M // VINSON</span></div>
+      <div class="hud-waypoint" style="bottom: 0%;"><span class="wp-dot"></span><span class="wp-text">0M // CAMPAIGN START</span></div>
+    </div>
+  </aside>
+
+  <!-- Mobile Sticky Top Altitude Bar -->
+  <div class="mobile-alt-strip" id="mobileAltStrip" aria-hidden="true">
+    <div class="container mobile-strip-inner">
+      <div class="mobile-strip-item"><span>TARGET</span> <strong>SEVEN SUMMITS</strong></div>
+      <div class="mobile-strip-item"><span>PHASE</span> <strong class="text-orange" id="mobZoneName">ACONCAGUA (6,961M)</strong></div>
+    </div>
+    <div class="mobile-strip-fill" id="mobStripFill"></div>
+  </div>
+
+ <!-- Global Fixed Navbar -->
+  <nav id="navbar">
+    <div class="container nav-container">
+      <a href="#home" class="brand-logo-link" aria-label="Beyond The Summit Home">
+        <img src="./bts1.jpeg" alt="Beyond The Summit" class="brand-campaign-img" />
+      </a>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#property">The Property</a></li>
+        <li><a href="#summits">7 Summits Roadmap</a></li>
+        <li><a href="#commercial">Commercial Pillars</a></li>
+        <li><a href="#athlete">The Athlete</a></li>
+        <li><a href="#tiers">Sponsorship Tiers</a></li>
+        <li><a href="#dispatches">Dispatches</a></li>
+        <li><a href="#contact" class="btn btn-nav">Partner With Us</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Campaign Hero Section -->
+    <header class="hero" id="home">
+      <div class="hero-bg-texture" style="background-image: url('back1.jpg');"></div>
+      <div class="hero-radial-glow"></div>
+
+      <div class="container hero-layout">
+        <!-- Left Column: Mission & Logo -->
+        <div class="hero-copy reveal">
+          <img src="bts1.jpeg" alt="Beyond The Summit" class="hero-badge-logo" />
+          <div class="hero-tag"><span class="pulse-dot"></span> 2026–2028 GLOBAL CAMPAIGN PROPERTY</div>
+          <h1 class="hero-title brand-font">SEVEN CONTINENTS.<br/><span class="text-orange">ONE TRICOLOUR.</span><br/>ONE STORY.</h1>
+          <p class="hero-quote">"A sponsorship platform built around Baljeet Kaur’s record-breaking mountaineering journey, designed for brands that want to own resilience, performance, courage, and national pride."[cite: 7]</p>
+          <p class="hero-subtext">A living 24–30 month brand property across the highest peaks on Earth[cite: 10, 12]. Conceptualized in partnership with <strong>G.RAS Collective</strong>[cite: 7].</p>
+          <div class="hero-actions">
+            <a href="#summits" class="btn btn-primary"><i class="fa-solid fa-earth-americas"></i> Seven Summits Roadmap</a>
+            <a href="#tiers" class="btn btn-outline"><i class="fa-solid fa-handshake"></i> Sponsorship Architecture</a>
+          </div>
+        </div>
+
+        <!-- Right Column: Media Deck -->
+        <div class="hero-card-deck reveal delay-1">
+          <div class="deck-card card-video glass-panel">
+            <video class="hero-loop-video" autoplay muted loop playsinline poster="BK-2.jpg">
+              <source src="hero-video.mp4" type="video/mp4" />
+            </video>
+            <div class="video-overlay-gradient"></div>
+            <div class="video-status-tag"><span class="rec-dot"></span> 7 CONTINENTS CAMPAIGN</div>
+          </div>
+
+          <div class="deck-card card-portrait glass-panel">
+            <img src="BK-face1.jpg" alt="Baljeet Kaur Campaign Flagbearer" loading="eager" />
+            <div class="portrait-telemetry-badge">
+              <span class="badge-sub">CAMPAIGN FLAGBEARER</span>
+              <strong>BALJEET KAUR // RECORD ALPINIST</strong>
+              <div class="coord-pill">7 CONTINENTS PROPERTY</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Campaign Metrics Counter Bar -->
+    <section class="metrics" id="metrics-bar">
+      <div class="container metrics-grid">
+        <div class="metric-item reveal">
+          <div><span class="counter" data-target="7">0</span></div>
+          <p>Continental Summits</p>
+        </div>
+        <div class="metric-item reveal delay-1">
+          <div><span class="counter" data-target="30">0</span><span class="accent-mark">mo</span></div>
+          <p>Campaign Lifecycle</p>
+        </div>
+        <div class="metric-item reveal delay-2">
+          <div><span class="counter" data-target="7">0</span><span class="accent-mark">&times;</span></div>
+          <p>8,000M+ Giants Proven</p>
+        </div>
+        <div class="metric-item reveal">
+          <div><span class="counter" data-target="100">0</span><span class="accent-mark">%</span></div>
+          <p>National Pride & Resilience</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Property Section -->
+    <section id="property" class="section-padding">
+      <div class="container about-grid">
+        <div class="about-text-col reveal">
+          <span class="section-eyebrow">The Campaign Property</span>
+          <h2 class="section-title brand-font">Not Just An Expedition. A Living Brand Platform.</h2>
+          <p class="body-text"><strong>Beyond the Summit</strong> transforms high-altitude endurance into a structured, commercially credible platform[cite: 10, 13]. Across 24 to 30 months, one athlete and one national tricolour embark on an unbroken narrative arc across all seven continents[cite: 7, 10, 12].</p>
+          <div class="grit-card glass-panel">
+            <i class="fa-solid fa-flag text-orange quote-mark"></i>
+            <div>
+              <strong>Commercial Credibility & High Impact</strong>
+              <p>Designed for brands that champion resilience, performance, and authenticity, backed by verified track records: five 8,000m summits in 30 days and zero-supplemental oxygen achievements[cite: 8, 10].</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-gallery-col reveal delay-1">
+          <div class="photo-pair">
+            <div class="photo-wrap wrap-main glass-panel">
+              <img src="BK-1.jpg" alt="Baljeet Kaur In Field Preparation" loading="lazy" />
+              <div class="photo-caption">Asset Architecture // 2026–2028 Cycle</div>
+            </div>
+            <div class="photo-wrap wrap-secondary glass-panel">
+              <img src="BK-2.jpg" alt="Tricolour on High Summit" loading="lazy" />
+              <div class="photo-caption text-orange">One Flag // Seven Continents</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seven Continents Interactive Roadmap -->
+    <section id="summits" class="section-padding map-section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Continental Expedition Status</span>
+          <h2 class="section-title brand-font">Seven Continents Roadmap</h2>
+          <p class="body-text" style="max-width: 650px; margin: 10px auto 0;">2 Completed • 5 Remaining Objectives across the 24–30 month campaign cycle[cite: 11, 12].</p>
+        </div>
+
+        <!-- Desktop Interactive Nodes -->
+        <div class="elevation-timeline reveal delay-1 desktop-only">
+          <div class="timeline-line"></div>
+          <button class="peak-node" data-peak="elbrus" style="bottom: 50%; left: 8%;" aria-label="Mt. Elbrus Europe">
+            <span class="node-dot"></span>
+            <span class="node-label">Elbrus (Europe) ✓</span>
+          </button>
+          <button class="peak-node" data-peak="kilimanjaro" style="bottom: 54%; left: 24%;" aria-label="Kilimanjaro Africa">
+            <span class="node-dot"></span>
+            <span class="node-label">Kilimanjaro (Africa) ✓</span>
+          </button>
+          <button class="peak-node active" data-peak="aconcagua" style="bottom: 68%; left: 42%;" aria-label="Aconcagua South America">
+            <span class="node-dot"></span>
+            <span class="node-label">Aconcagua (S. America)</span>
+          </button>
+          <button class="peak-node" data-peak="everest" style="bottom: 95%; left: 60%;" aria-label="Everest Asia">
+            <span class="node-dot"></span>
+            <span class="node-label">Everest (Asia)</span>
+          </button>
+          <button class="peak-node" data-peak="denali" style="bottom: 62%; left: 75%;" aria-label="Denali North America">
+            <span class="node-dot"></span>
+            <span class="node-label">Denali (N. America)</span>
+          </button>
+          <button class="peak-node" data-peak="carstensz" style="bottom: 40%; left: 88%;" aria-label="Carstensz Oceania">
+            <span class="node-dot"></span>
+            <span class="node-label">Carstensz (Oceania)</span>
+          </button>
+          <button class="peak-node" data-peak="vinson" style="bottom: 42%; left: 98%;" aria-label="Vinson Antarctica">
+            <span class="node-dot"></span>
+            <span class="node-label">Vinson (Antarctica)</span>
+          </button>
+        </div>
+
+        <!-- Mobile Pill Selector -->
+        <div class="mobile-peak-pills mobile-only reveal delay-1">
+          <button class="mob-pill" data-peak="elbrus">Elbrus ✓</button>
+          <button class="mob-pill" data-peak="kilimanjaro">Kilimanjaro ✓</button>
+          <button class="mob-pill active" data-peak="aconcagua">Aconcagua</button>
+          <button class="mob-pill" data-peak="everest">Everest</button>
+          <button class="mob-pill" data-peak="denali">Denali</button>
+          <button class="mob-pill" data-peak="carstensz">Carstensz</button>
+          <button class="mob-pill" data-peak="vinson">Vinson Massif</button>
+        </div>
+
+        <!-- Dynamic Peak Detail Card -->
+        <div class="peak-detail-card glass-panel reveal delay-2" id="peakDetailCard">
+          <div class="detail-stat-box">
+            <div class="stat-unit">
+              <span class="stat-title">CONTINENT & PEAK</span>
+              <span class="stat-val" id="peakContinent">South America // Aconcagua</span>
+            </div>
+            <div class="stat-unit">
+              <span class="stat-title">ELEVATION</span>
+              <span class="stat-val" id="peakAlt">6,961 M</span>
+            </div>
+            <div class="stat-unit">
+              <span class="stat-title">EXPEDITION WINDOW</span>
+              <span class="stat-val text-orange" id="peakWindow">Jan–Feb 2027</span>
+            </div>
+            <div class="stat-unit">
+              <span class="stat-title">CAMPAIGN STATUS</span>
+              <span class="stat-val text-green" id="peakStatus">Upcoming Target (Phase 1)</span>
+            </div>
+          </div>
+          <p class="detail-description" id="peakDesc">Southern summer window in Argentina. Serves as altitude maintenance, technical acclimatization, and first major activation milestone for Beyond the Summit partners[cite: 12].</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- The 6 Commercial Pillars -->
+    <section id="commercial" class="section-padding">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Value Proposition</span>
+          <h2 class="section-title brand-font">Six Commercial Pillars</h2>
+          <p class="body-text" style="max-width: 620px; margin: 0 auto;">Transforming athletic endurance into measurable corporate and marketing returns[cite: 13, 22].</p>
+        </div>
+        <div class="roots-split-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="grit-card glass-panel reveal">
+            <div>
+              <h3 class="brand-font text-orange" style="margin-bottom: 6px;">1. Performance</h3>
+              <p>Demonstrating extreme brand durability, precision, and peak athletic execution under the harshest conditions on Earth[cite: 13].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal delay-1">
+            <div>
+              <h3 class="brand-font text-orange" style="margin-bottom: 6px;">2. Proof</h3>
+              <p>Backed by a decade of verified high-altitude records, oxygen-free milestones, and relentless safety execution[cite: 9, 13].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal delay-2">
+            <div>
+              <h3 class="brand-font text-orange" style="margin-bottom: 6px;">3. Purpose</h3>
+              <p>Uncompromising alignment with courage, women in sports, mental fortitude, and pioneering national leadership[cite: 13].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal">
+            <div>
+              <h3 class="brand-font text-orange" style="margin-bottom: 6px;">4. Content Engine</h3>
+              <p>Rich, unscripted storytelling from base camp preparation and real-time dispatches to climactic summit moments[cite: 13, 23].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal delay-1">
+            <div>
+              <h3 class="brand-font text-orange" style="margin-bottom: 6px;">5. People & Corporate</h3>
+              <p>Workplace activation through executive keynotes, leadership workshops, and employee resilience programs[cite: 13, 24].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal delay-2">
+            <div>
+              <h3 class="brand-font text-orange" style="margin-bottom: 6px;">6. National Pride</h3>
+              <p>Unfurling the Indian tricolour across all 7 summits, igniting mainstream media coverage and high emotional recall[cite: 7, 13].</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Athlete: Baljeet Kaur -->
+    <section id="athlete" class="section-padding roots-section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">The Campaign Flagbearer</span>
+          <h2 class="section-title brand-font">Why Baljeet Kaur Is Commercially Credible</h2>
+        </div>
+        <div class="roots-split-grid">
+          <div class="saree-card reveal delay-1 glass-panel">
+            <div class="saree-img-box">
+              <img src="BK-SAREE.jpg" alt="Baljeet Kaur Traditional Heritage" loading="lazy" />
+              <div class="saree-overlay-meta">
+                <h3 class="brand-font">Indigenous Roots & Universal Appeal</h3>
+                <p>From Himachal farmlands to international summits—combining humble groundedness with world-class athletic grit[cite: 5, 8].</p>
+              </div>
+            </div>
+          </div>
+          <div class="family-narrative-card reveal delay-2 glass-panel">
+            <div class="grand-photo-box">
+              <img src="BK-FARM1.jpg" alt="Natural conditioning" loading="lazy" />
+            </div>
+            <div class="family-text-content">
+              <h4 class="brand-font">Multi-Sport Athlete</h4>
+              <p>Expanding beyond the mountains into HYROX competitions, marathons, IRONMAN triathlons, and the historic Kanyakumari-to-Kashmir endurance run[cite: 17]. Supported by elite sports doctors, physiotherapists, and race crews[cite: 17].</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sponsorship Architecture -->
+    <section id="tiers" class="section-padding">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">Partnership Architecture</span>
+          <h2 class="section-title brand-font">Sponsorship Tiers & Platform Rights</h2>
+          <p class="body-text" style="max-width: 650px; margin: 10px auto 0;">Total Target: ₹4.40 Cr (Logistics, permits, media production, and corporate activations)[cite: 15, 16].</p>
+        </div>
+        <div class="roots-split-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="grit-card glass-panel reveal" style="border: 2px solid var(--orange);">
+            <div>
+              <span class="coord-pill" style="margin-bottom: 8px;">1 EXCLUSIVE SLOT</span>
+              <h3 class="brand-font text-orange">Title Partner (₹1.50 Cr)</h3>
+              <p style="font-size: 0.9rem; margin-top: 6px;">"Title Partner of Beyond the Summit"[cite: 18]. Complete platform visibility, naming rights, prominent logo on all high-altitude kits, co-branded film documentary, and executive leadership engagements[cite: 18].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal delay-1">
+            <div>
+              <span class="coord-pill" style="margin-bottom: 8px;">2 EXCLUSIVE SLOTS</span>
+              <h3 class="brand-font text-orange">Co-Powered (₹50 Lakh each)</h3>
+              <p style="font-size: 0.9rem; margin-top: 6px;">Category exclusivity within segment, prominent co-branding on expedition media, continuous content integration, and athlete keynote activations[cite: 16, 19].</p>
+            </div>
+          </div>
+          <div class="grit-card glass-panel reveal delay-2">
+            <div>
+              <span class="coord-pill" style="margin-bottom: 8px;">MULTIPLE SLOTS</span>
+              <h3 class="brand-font text-orange">Official & In-Kind (₹10L – ₹25L+)</h3>
+              <p style="font-size: 0.9rem; margin-top: 6px;">Official Partners (₹25L), Associate Partners (₹10L), and In-Kind Partners providing gear, travel, medical readiness, or high-altitude technical support[cite: 16, 20, 21].</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dispatches / Social Engine -->
+    <section id="dispatches" class="section-padding ig-section">
+      <div class="container">
+        <div class="section-header-flex reveal">
+          <div>
+            <span class="section-eyebrow">Live Dispatches</span>
+            <h2 class="section-title brand-font">Field Notes & Campaign Journal</h2>
+          </div>
+          <div class="carousel-nav">
+            <button class="c-btn" id="slideLeft" aria-label="Slide Left"><i class="fa-solid fa-arrow-left"></i></button>
+            <button class="c-btn" id="slideRight" aria-label="Slide Right"><i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <div class="ig-carousel reveal delay-1" id="igCarousel">
+          <div class="ig-tile glass-panel"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DaNOn8Hk62q/" data-instgrm-version="14"></blockquote></div>
+          <div class="ig-tile glass-panel"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DVDEM66EyAR/" data-instgrm-version="14"></blockquote></div>
+          <div class="ig-tile glass-panel"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DU7xX3jk5of/" data-instgrm-version="14"></blockquote></div>
+          <div class="ig-tile glass-panel"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DPYt2r0k3CN/" data-instgrm-version="14"></blockquote></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact & Brand Partnership Form -->
+    <section id="contact" class="section-padding">
+      <div class="container">
+        <div class="booking-card reveal glass-panel">
+          <div class="booking-img-wrap">
+            <img src="contact-me.jpg" alt="Beyond The Summit Management" loading="lazy" />
+            <div class="booking-badge">
+              <h3 class="brand-font">G.RAS COLLECTIVE</h3>
+              <p>Campaign Management • Brand Partnerships • Executive Engagements[cite: 7, 24]</p>
+              <p style="color: var(--orange); margin-top: 4px; font-family: var(--font-mono); font-size: 0.72rem;">info@grascollective.com | +91-9930966977[cite: 24]</p>
+            </div>
+          </div>
+          <div class="booking-form-wrap">
+            <h2 class="brand-font">Partner With The Campaign</h2>
+            <p class="form-subtext">Join India's historic 2026–2028 Seven Continents property[cite: 7, 10]. Secure category exclusivity or explore brand integration[cite: 16].</p>
+            <form class="lead-form" onsubmit="event.preventDefault(); alert('Inquiry received. The G.RAS Collective and Beyond The Summit partnership desk will respond promptly.');">
+              <div class="form-row">
+                <input type="text" placeholder="Brand / Organization Name" required />
+                <input type="email" placeholder="Official Corporate Email" required />
+              </div>
+              <select aria-label="Partnership Tier">
+                <option value="title">Title Partner (₹1.5 Cr Exclusive)[cite: 16, 18]</option>
+                <option value="co-powered">Co-Powered Partner (₹50 Lakh)[cite: 16, 19]</option>
+                <option value="official">Official Partner (₹25 Lakh)[cite: 16, 20]</option>
+                <option value="associate">Associate Partner (₹10 Lakh)[cite: 16, 20]</option>
+                <option value="in-kind">In-Kind Equipment & Technical Services[cite: 16, 21]</option>
+                <option value="keynote">Corporate Keynote / Leadership Program[cite: 24]</option>
+              </select>
+              <textarea rows="4" placeholder="Outline your brand alignment or desired collaboration scope..." required></textarea>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fa-solid fa-paper-plane"></i> Submit Sponsorship Inquiry
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Campaign Footer -->
+  <footer>
+    <div class="container footer-box reveal">
+      <img src="bts1.jpeg" alt="Beyond The Summit Logo" class="footer-logo-img" />
+      <h3 class="brand-font">BEYOND THE SUMMIT // G.RAS COLLECTIVE</h3>
+      <p>Seven Continents. One Tricolour. One Extraordinary Story. &copy; 2026–2028 Beyond the Summit[cite: 7].</p>
+      <p style="font-size: 0.75rem; color: var(--orange); margin-top: 4px;">PEOPLE • SPORT • PLACES • POSSIBILITIES | JAI HIND[cite: 24]</p>
+    </div>
+  </footer>
+
+  <script async src="//www.instagram.com/embed.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
