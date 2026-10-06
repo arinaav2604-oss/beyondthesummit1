@@ -1,21 +1,8 @@
-// Register Service Worker with clean error handling
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(err => {
-      console.warn('SW registration bypassed:', err);
-    });
-  });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Immediately reveal all elements as fail-safe
-  document.querySelectorAll(".reveal").forEach(el => el.classList.add("active"));
-  document.documentElement.classList.add("js-loaded");
-
   const isDesktop = window.matchMedia("(min-width: 901px)").matches;
   const isFinePointer = window.matchMedia("(pointer: fine)").matches;
 
-  // 1. DESKTOP MAGNETIC CURSOR (Only runs on mouse devices)
+  // 1. DESKTOP MAGNETIC CURSOR
   const cursorDot = document.getElementById("cursor-dot");
   const cursorRing = document.getElementById("cursor-ring");
 
@@ -45,14 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. DISMISS PRELOADER SAFELY
+  // 2. DISMISS PRELOADER SAFELY (Smoothly transitions out after 1.2s max)
   const preloader = document.getElementById("preloader");
   const dismissPreloader = () => {
     if (preloader && !preloader.classList.contains("slide-up")) {
       preloader.classList.add("slide-up");
     }
   };
-  setTimeout(dismissPreloader, 1200);
+  setTimeout(dismissPreloader, 1000);
 
   // 3. SCROLL HUD & ALTIMETER
   const hudFill = document.getElementById("hudFill");
