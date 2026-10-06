@@ -1,3 +1,12 @@
+// Register Service Worker with clean error handling
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => {
+      console.warn('SW registration bypassed:', err);
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Immediately reveal all elements as fail-safe
   document.querySelectorAll(".reveal").forEach(el => el.classList.add("active"));
@@ -6,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const isDesktop = window.matchMedia("(min-width: 901px)").matches;
   const isFinePointer = window.matchMedia("(pointer: fine)").matches;
 
-  // 1. DESKTOP MAGNETIC CURSOR
+  // 1. DESKTOP MAGNETIC CURSOR (Only runs on mouse devices)
   const cursorDot = document.getElementById("cursor-dot");
   const cursorRing = document.getElementById("cursor-ring");
 
@@ -214,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     slideRight.addEventListener("click", () => igCarousel.scrollBy({ left: 280, behavior: 'smooth' }));
   }
 
-  // 7. MOBILE DRAWER NAV
+  // 7. MOBILE DRAWER NAVIGATION
   const mobileToggle = document.getElementById("mobile-toggle");
   const navLinks = document.getElementById("nav-links");
   if (mobileToggle && navLinks) {
