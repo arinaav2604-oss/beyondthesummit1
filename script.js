@@ -1,17 +1,12 @@
-// Register Service Worker with clean error handling
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(err => {
-      console.warn('SW registration bypassed:', err);
-    });
-  });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
+  // Immediately reveal all elements as fail-safe
+  document.querySelectorAll(".reveal").forEach(el => el.classList.add("active"));
+  document.documentElement.classList.add("js-loaded");
+
   const isDesktop = window.matchMedia("(min-width: 901px)").matches;
   const isFinePointer = window.matchMedia("(pointer: fine)").matches;
 
-  // 1. DESKTOP MAGNETIC CURSOR (Only runs on mouse devices)
+  // 1. DESKTOP MAGNETIC CURSOR
   const cursorDot = document.getElementById("cursor-dot");
   const cursorRing = document.getElementById("cursor-ring");
 
@@ -41,101 +36,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. REVEAL OBSERVER ENGINE
-  const revealElements = () => {
-    const revealEls = document.querySelectorAll(".reveal");
-    if (!("IntersectionObserver" in window)) {
-      revealEls.forEach(el => el.classList.add("active"));
-      return;
-    }
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("active");
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { rootMargin: "0px", threshold: 0.08 });
-    revealEls.forEach(el => observer.observe(el));
-  };
-
-  // 3. PRELOADER SEQUENCE
+  // 2. DISMISS PRELOADER SAFELY
   const preloader = document.getElementById("preloader");
-  const preloaderAlt = document.getElementById("preloader-alt");
-  const zoneStatus = document.getElementById("zone-status");
-  const routeActive = document.getElementById("route-active");
-  const climberSprite = document.getElementById("climber-sprite");
-  const summitBeacon = document.getElementById("summit-beacon");
-  const loaderBar = document.getElementById("loader-bar");
-  const ecgCanvas = document.getElementById("ecg-canvas");
-
-  let alt = 1500;
-  const targetAlt = 8849;
-  const duration = 1600;
-  const interval = 25;
-  const step = Math.ceil((targetAlt - 1500) / (duration / interval));
-
-  let ecgTimer = null;
-  if (ecgCanvas && ecgCanvas.getContext) {
-    const ecgCtx = ecgCanvas.getContext("2d");
-    let ecgOffset = 0;
-    ecgTimer = setInterval(() => {
-      ecgCtx.clearRect(0, 0, ecgCanvas.width, ecgCanvas.height);
-      ecgCtx.strokeStyle = "#E9692A";
-      ecgCtx.lineWidth = 1.5;
-      ecgCtx.beginPath();
-      for (let x = 0; x < ecgCanvas.width; x++) {
-        let y = 10;
-        const phase = (x + ecgOffset) % 60;
-        if (phase > 24 && phase < 30) y = 3;
-        else if (phase >= 30 && phase < 36) y = 17;
-        if (x === 0) ecgCtx.moveTo(x, y);
-        else ecgCtx.lineTo(x, y);
-      }
-      ecgCtx.stroke();
-      ecgOffset += 3;
-    }, 30);
-  }
-
   const dismissPreloader = () => {
-    if (ecgTimer) clearInterval(ecgTimer);
     if (preloader && !preloader.classList.contains("slide-up")) {
       preloader.classList.add("slide-up");
-      setTimeout(revealElements, 150);
-    } else {
-      revealElements();
     }
   };
+  setTimeout(dismissPreloader, 1200);
 
-  // Fail-safe to avoid preloader freezing on mobile devices
-  const failSafeTimer = setTimeout(dismissPreloader, 2400);
-
-  const altTimer = setInterval(() => {
-    alt += step;
-    if (alt >= targetAlt) {
-      alt = targetAlt;
-      clearInterval(altTimer);
-      clearTimeout(failSafeTimer);
-      if (zoneStatus) {
-        zoneStatus.textContent = "SEVEN SUMMITS READY";
-        zoneStatus.style.color = "#10B981";
-      }
-      if (climberSprite) climberSprite.style.opacity = "0";
-      if (summitBeacon) summitBeacon.classList.add("show");
-      setTimeout(dismissPreloader, 350);
-    }
-
-    const progressRatio = Math.min((alt - 1500) / (targetAlt - 1500), 1);
-    if (routeActive) routeActive.style.strokeDashoffset = 600 - (600 * progressRatio);
-    if (climberSprite) {
-      climberSprite.style.left = `${20 + (240 * progressRatio)}px`;
-      climberSprite.style.top = `${170 - (140 * progressRatio)}px`;
-    }
-    if (preloaderAlt) preloaderAlt.textContent = alt.toLocaleString();
-    if (loaderBar) loaderBar.style.width = `${progressRatio * 100}%`;
-  }, interval);
-
-  // 4. SCROLL ALTIMETER STRIP
+  // 3. SCROLL HUD & ALTIMETER
   const hudFill = document.getElementById("hudFill");
   const hudIndicator = document.getElementById("hudIndicator");
   const hudAltNum = document.getElementById("hudAltNum");
@@ -176,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: true });
 
-  // 5. METRICS OBSERVER
+  // 4. METRICS COUNTER
   const metricsBar = document.getElementById("metrics-bar");
   if (metricsBar) {
     let triggered = false;
@@ -186,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".counter").forEach(c => {
           const target = +c.getAttribute("data-target") || 0;
           let count = 0;
-          const inc = Math.max(target / 24, 1);
+          const inc = Math.max(target / 20, 1);
           const update = () => {
             count += inc;
             if (count < target) {
@@ -199,11 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
           update();
         });
       }
-    }, { threshold: 0.15 });
+    }, { threshold: 0.1 });
     mObserver.observe(metricsBar);
   }
 
-  // 6. SEVEN CONTINENTS DATA ENGINE
+  // 5. SEVEN CONTINENTS DATA ENGINE
   const peakData = {
     elbrus: {
       continent: "Europe // Mt. Elbrus",
@@ -295,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 7. CAROUSEL NAVIGATION
+  // 6. DISPATCHES CAROUSEL
   const igCarousel = document.getElementById("igCarousel");
   const slideLeft = document.getElementById("slideLeft");
   const slideRight = document.getElementById("slideRight");
@@ -304,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     slideRight.addEventListener("click", () => igCarousel.scrollBy({ left: 280, behavior: 'smooth' }));
   }
 
-  // 8. MOBILE DRAWER NAVIGATION
+  // 7. MOBILE DRAWER NAV
   const mobileToggle = document.getElementById("mobile-toggle");
   const navLinks = document.getElementById("nav-links");
   if (mobileToggle && navLinks) {
